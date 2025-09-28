@@ -1,0 +1,132 @@
+/* General reset */
+body {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  width: 300px;
+  color: #222;
+}
+
+/* Container */
+#popup-content {
+  padding: 16px;
+  text-align: center;
+}
+
+#popup-content h1 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #e50914; /* Netflix/YouTube red */
+}
+
+/* Form styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+label {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+
+input,
+select {
+  padding: 8px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #e50914;
+}
+
+button {
+  background: #e50914;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #b20710;
+}
+
+/* Error content */
+#error-content {
+  margin: 10px 16px;
+  font-size: 13px;
+  color: #e50914;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ✅ Success message */
+#success-message {
+  margin-top: 20px;
+  padding: 10px;
+  background: #e6f9ec; /* soft green background */
+  border: 2px solid #2ecc71; /* green border */
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d7a46; /* dark green text */
+  text-align: center;
+  display: none; /* hidden until shown */
+  animation: fadeIn 0.5s ease;
+}
+
+#info-message {
+  margin-top: 20px;
+  padding: 12px;
+  background: #f9f9f9;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  display: none; /* shown when checks are active */
+}
+
+#info-message p {
+  margin: 0 0 10px 0;
+}
+
+#info-message button {
+  background: #e50914;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#info-message button:hover {
+  background: #b20710;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

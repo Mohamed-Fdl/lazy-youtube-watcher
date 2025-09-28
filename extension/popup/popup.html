@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LazyYouTubeWatcher</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div id="popup-content">
+        <h1>LazyYouTubeWatcher</h1>
+        <form id="settings-form">
+            <label for="chatId">Telegram Chat ID</label>
+            <input type="text" id="chatId" name="chatId" placeholder="Enter your chat ID" required>
+
+            <label for="interval">Check Interval (In Min)</label>
+            <select id="interval" name="interval">
+                <option value="1">1</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="60">60</option>
+            </select>
+
+            <button type="submit" id="setting-form-submission-button">Start Checking</button>
+        </form>
+
+        <div id="info-message" style="display: none;">
+            <p><strong>Current Check:</strong> Every <span id="interval-info"></span> minutes</p>
+            <button id="remove-check">🛑 Remove Check</button>
+        </div>
+
+        <p id="success-message" style="display: none; color:rgb(72, 187, 72); font-weight: bold;"></p>
+    </div>
+
+    <div id="error-content"></div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
