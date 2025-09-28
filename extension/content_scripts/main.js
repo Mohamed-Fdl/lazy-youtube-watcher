@@ -2,6 +2,9 @@
   if (window.hasRun) {
     return;
   }
+
+  const ytVideo = document.querySelector("video");
+
   window.hasRun = true;
 
   const COMMANDS = {
@@ -16,12 +19,7 @@
 
       window.awakenessCheckSet = data;
       window.awakenessCheckInterval = setInterval(
-        () =>
-          console.log(
-            `[checking set for ${chatId} started at ${new Date().getDate(
-              start
-            )} each ${interval} minutes]`
-          ),
+        () => checkForAwakeness(ytVideo, chatId, interval),
         interval * 1000
       );
 
@@ -55,3 +53,11 @@
     executor(data);
   });
 })();
+
+async function checkForAwakeness(ytVideo, chatId, interval) {
+  console.log("[checking for awakeness]", ytVideo, chatId, interval);
+  if (ytVideo.paused) return;
+  ytVideo.pause();
+
+  return;
+}

@@ -12,7 +12,7 @@ Only then will playback continue.
 - **Telegram notifications** with inline Yes/No buttons
 - **Resume playback** if you confirm you’re awake
 - **Pause playback** if you don’t confirm (or press No)
-- Works with YouTube on **desktop Chrome** (via extension)
+- Works with YouTube on **desktop Chrome/Firefox** (via extension)
 
 ---
 
