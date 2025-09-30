@@ -3,7 +3,7 @@ import cors from "@fastify/cors";
 import WebSocket from "@fastify/websocket";
 import { Configuration } from "./configuration.js";
 import { WebSocketParams } from "./schema.js";
-import { AwakenessCheckResponse, EventsOnAwakenessCheckResponseMapping, TelegramTokenSecretHeaderKey, } from "./globals.js";
+import { AwakenessCheckResponse, EventsOnAwakenessCheckResponseMapping, ServerEventsHandled, SocketEventHandling, TelegramTokenSecretHeaderKey, } from "./globals.js";
 import { ReadonlyFromMappedResult } from "@sinclair/typebox";
 const Chats = new Map();
 const fastify = Fastify({
@@ -15,12 +15,15 @@ fastify.register(async function (fastify) {
     fastify.get("/:chatId", { websocket: true, schema: { params: WebSocketParams } }, (socket, req) => {
         const params = req.params;
         const chatId = Number(params.chatId);
-        socket.on("message", (message) => {
+        socket.on("message", async (message) => {
             const { event, data } = JSON.parse(message.toString());
-            socket.send("hi from server");
+            const executor = SocketEventHandling[event];
+            if (!executor)
+                return;
+            await executor(data);
         });
         socket.on("close", () => {
-            req.log.debug(`[Client disconnected]: ${chatId}`);
+            req.log.info(`[client disconnected]: ${chatId}`);
             Chats.delete(chatId);
             socket.close();
         });
@@ -34,8 +37,6 @@ fastify.get("/", async (request, reply) => {
 fastify.post("/webhook", async (request, reply) => {
     request.log.info(`req-headers: ${JSON.stringify(request.headers)}`);
     request.log.info(`req-body: ${JSON.stringify(request.body)}`);
-    console.log("[req-headers]", request.headers);
-    console.log("[req-body]", request.body);
     const secretHeader = request.headers[TelegramTokenSecretHeaderKey];
     if (!(secretHeader === Configuration.telegram.secretHeaderToken)) {
         reply.send({ status: "ko", error: "Invalid header signature" });

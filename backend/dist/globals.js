@@ -1,3 +1,4 @@
+import { SendAwakenessCheckAlertMessage } from "./utils.js";
 export var HttpStatusCode;
 (function (HttpStatusCode) {
     HttpStatusCode[HttpStatusCode["SUCCESS"] = 200] = "SUCCESS";
@@ -8,13 +9,20 @@ export var AwakenessCheckResponse;
     AwakenessCheckResponse["YES"] = "check.awakeness.yes";
     AwakenessCheckResponse["NO"] = "check.awakeness.no";
 })(AwakenessCheckResponse || (AwakenessCheckResponse = {}));
-export var EventsToEmit;
-(function (EventsToEmit) {
-    EventsToEmit["PAUSE"] = "pause";
-    EventsToEmit["RESUME"] = "resume";
-})(EventsToEmit || (EventsToEmit = {}));
+export var Events;
+(function (Events) {
+    Events["PAUSE"] = "pause";
+    Events["RESUME"] = "resume";
+})(Events || (Events = {}));
+export var ServerEventsHandled;
+(function (ServerEventsHandled) {
+    ServerEventsHandled["CHECK_AWAKENESS"] = "check.awakeness";
+})(ServerEventsHandled || (ServerEventsHandled = {}));
 export const EventsOnAwakenessCheckResponseMapping = {
-    [AwakenessCheckResponse.YES]: EventsToEmit.RESUME,
-    [AwakenessCheckResponse.NO]: EventsToEmit.PAUSE,
+    [AwakenessCheckResponse.YES]: Events.RESUME,
+    [AwakenessCheckResponse.NO]: Events.PAUSE,
+};
+export const SocketEventHandling = {
+    [ServerEventsHandled.CHECK_AWAKENESS]: SendAwakenessCheckAlertMessage,
 };
 //# sourceMappingURL=globals.js.map

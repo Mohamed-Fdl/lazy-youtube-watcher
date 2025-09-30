@@ -65,4 +65,5 @@ export type TelegramCallbackQueyUpdate = {
         data: string;
     };
 };
+export type HandleSocketEvent = (data: any) => Promise<void>;
 //# sourceMappingURL=types.d.ts.map

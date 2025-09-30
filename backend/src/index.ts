@@ -6,6 +6,8 @@ import { WebSocketParams, type WebSocketParamsType } from "./schema.js";
 import {
   AwakenessCheckResponse,
   EventsOnAwakenessCheckResponseMapping,
+  ServerEventsHandled,
+  SocketEventHandling,
   TelegramTokenSecretHeaderKey,
 } from "./globals.js";
 import type { TelegramCallbackQueyUpdate } from "./types.js";
@@ -29,13 +31,18 @@ fastify.register(async function (fastify) {
       const params = req.params as WebSocketParamsType;
       const chatId = Number(params.chatId);
 
-      socket.on("message", (message: Buffer) => {
+      socket.on("message", async (message: Buffer) => {
         const { event, data } = JSON.parse(message.toString());
-        socket.send("hi from server");
+
+        const executor =
+          SocketEventHandling[event as unknown as ServerEventsHandled];
+        if (!executor) return;
+
+        await executor(data);
       });
 
       socket.on("close", () => {
-        req.log.debug(`[Client disconnected]: ${chatId}`);
+        req.log.info(`[client disconnected]: ${chatId}`);
         Chats.delete(chatId);
         socket.close();
       });
@@ -53,9 +60,6 @@ fastify.get("/", async (request, reply) => {
 fastify.post("/webhook", async (request, reply) => {
   request.log.info(`req-headers: ${JSON.stringify(request.headers)}`);
   request.log.info(`req-body: ${JSON.stringify(request.body)}`);
-
-  console.log("[req-headers]", request.headers);
-  console.log("[req-body]", request.body);
 
   const secretHeader = request.headers[TelegramTokenSecretHeaderKey];
   if (!(secretHeader === Configuration.telegram.secretHeaderToken)) {
