@@ -15,5 +15,3 @@ Only then will playback continue.
 - Works with YouTube on **desktop Chrome/Firefox** (via extension)
 
 ---
-
-
