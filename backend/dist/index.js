@@ -1,33 +1,73 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import WebSocket from "@fastify/websocket";
 import { Configuration } from "./configuration.js";
-import { HttpStatusCode } from "./globals.js";
-const fastify = Fastify({ logger: true });
-await fastify.register(cors, { origin: "*" });
-fastify.get("/ping", async (request, reply) => {
-    request.log.info("ping req");
-    return "pong\n";
+import { WebSocketParams } from "./schema.js";
+import { AwakenessCheckResponse, EventsOnAwakenessCheckResponseMapping, TelegramTokenSecretHeaderKey, } from "./globals.js";
+import { ReadonlyFromMappedResult } from "@sinclair/typebox";
+const Chats = new Map();
+const fastify = Fastify({
+    logger: { level: Configuration.httpServer.logLevel },
 });
-fastify.get("/sse", async (request, reply) => {
-    reply.raw.writeHead(HttpStatusCode.SUCCESS, {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
+await fastify.register(cors, { origin: "*" });
+await fastify.register(WebSocket);
+fastify.register(async function (fastify) {
+    fastify.get("/:chatId", { websocket: true, schema: { params: WebSocketParams } }, (socket, req) => {
+        const params = req.params;
+        const chatId = Number(params.chatId);
+        socket.on("message", (message) => {
+            const { event, data } = JSON.parse(message.toString());
+            socket.send("hi from server");
+        });
+        socket.on("close", () => {
+            req.log.debug(`[Client disconnected]: ${chatId}`);
+            Chats.delete(chatId);
+            socket.close();
+        });
+        Chats.set(chatId, socket);
     });
-    let counter = 0;
-    const interval = setInterval(() => {
-        counter++;
-        const data = `data: New message ${counter}\n\n`;
-        reply.raw.write(data);
-        if (counter >= 5) {
-            clearInterval(interval);
-            reply.raw.end();
+});
+fastify.get("/", async (request, reply) => {
+    console.log("[server is up]");
+    reply.send({ status: "ok" });
+});
+fastify.post("/webhook", async (request, reply) => {
+    request.log.info(`req-headers: ${JSON.stringify(request.headers)}`);
+    request.log.info(`req-body: ${JSON.stringify(request.body)}`);
+    console.log("[req-headers]", request.headers);
+    console.log("[req-body]", request.body);
+    const secretHeader = request.headers[TelegramTokenSecretHeaderKey];
+    if (!(secretHeader === Configuration.telegram.secretHeaderToken)) {
+        reply.send({ status: "ko", error: "Invalid header signature" });
+        return;
+    }
+    try {
+        const { callback_query } = request.body;
+        const { data, message } = callback_query;
+        const textMessage = data;
+        const chatId = message.chat.id;
+        if (!Object.values(AwakenessCheckResponse).includes(textMessage)) {
+            request.log.info(`unknown callback data response: ${textMessage}`);
+            reply.send({ status: "ko", error: "Unknown callback data response" });
+            return;
         }
-    }, 1000);
-    request.socket.on("close", () => {
-        clearInterval(interval);
-    });
+        const socket = Chats.get(chatId);
+        if (!socket) {
+            request.log.info(`realtime connection not found for chat: ${chatId}`);
+            reply.send({ status: "ko", error: "Realtime connection not found" });
+            return;
+        }
+        socket.send(JSON.stringify({
+            event: EventsOnAwakenessCheckResponseMapping[textMessage],
+            data: null,
+        }));
+        reply.send({ status: "ok" });
+        return;
+    }
+    catch (error) {
+        request.log.error(`Error on webhook handling: ${JSON.stringify(error)}`);
+        reply.send({ status: "ko", error });
+    }
 });
 fastify.listen({ port: Configuration.httpServer.port }, (err, address) => {
     if (err) {
