@@ -11,7 +11,6 @@ import {
   TelegramTokenSecretHeaderKey,
 } from "./globals.js";
 import type { TelegramCallbackQueyUpdate } from "./types.js";
-import { ReadonlyFromMappedResult } from "@sinclair/typebox";
 
 const Chats: Map<number, WebSocket.WebSocket> = new Map();
 

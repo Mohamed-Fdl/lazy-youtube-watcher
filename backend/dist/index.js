@@ -4,7 +4,6 @@ import WebSocket from "@fastify/websocket";
 import { Configuration } from "./configuration.js";
 import { WebSocketParams } from "./schema.js";
 import { AwakenessCheckResponse, EventsOnAwakenessCheckResponseMapping, ServerEventsHandled, SocketEventHandling, TelegramTokenSecretHeaderKey, } from "./globals.js";
-import { ReadonlyFromMappedResult } from "@sinclair/typebox";
 const Chats = new Map();
 const fastify = Fastify({
     logger: { level: Configuration.httpServer.logLevel },

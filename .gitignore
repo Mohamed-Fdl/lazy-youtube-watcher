@@ -2,3 +2,4 @@ node_modules
 trash.txt
 tests/*
 .env
+backend/dist/*
