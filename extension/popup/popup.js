@@ -10,6 +10,7 @@ const COMMANDS = {
   GET_STATUS: "get.status",
   UPDATE_BROWSER_ACTION_UI: "update.browser.action.ui",
   REMOVE_AWAKENESS_CHECK: "remove.awakeness.check",
+  SEND_NOTIFICATION: "send.notification",
 };
 const commandHandler = {
   [COMMANDS.SET_AWAKENESS_CHECK]: (data) => {
@@ -27,6 +28,9 @@ const commandHandler = {
     return;
   },
   [COMMANDS.REMOVE_AWAKENESS_CHECK]: (data) => {
+    return;
+  },
+  [COMMANDS.SEND_NOTIFICATION]: (data) => {
     return;
   },
 };

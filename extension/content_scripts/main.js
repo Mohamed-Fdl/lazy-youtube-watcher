@@ -4,16 +4,21 @@
   }
   window.hasRun = true;
 
+  const extensionName = "LazyYoutubeWatcher";
+
   const serverUrl = "ws://localhost:8080";
   let socket = null;
 
   const ytVideo = document.querySelector("video");
+  const ytVideoPageTitle = document.querySelector("title").textContent;
+  const ytVideoTitle = extractYoutubeVideoTitleFromPageTitle(ytVideoPageTitle);
 
   const COMMANDS = {
     SET_AWAKENESS_CHECK: "set.awakeness.check",
     GET_STATUS: "get.status",
     UPDATE_BROWSER_ACTION_UI: "update.browser.action.ui",
     REMOVE_AWAKENESS_CHECK: "remove.awakeness.check",
+    SEND_NOTIFICATION: "send.notification",
   };
   const commandHandler = {
     [COMMANDS.SET_AWAKENESS_CHECK]: async (data) => {
@@ -49,6 +54,9 @@
       console.log("[checking removed]");
       return;
     },
+    [COMMANDS.SEND_NOTIFICATION]: (data) => {
+      return;
+    },
   };
 
   const SERVER_EVENTS_TO_HANDLE = {
@@ -77,6 +85,16 @@
     console.log("[checking for awakeness]", chatId);
     if (ytVideo.paused) return;
     ytVideo.pause();
+    const notificationData = {
+      type: "basic",
+      iconUrl: browser.runtime.getURL("icons/96.png"),
+      title: extensionName,
+      message: getPauseNotificationMessage(ytVideoTitle),
+    };
+    browser.runtime.sendMessage({
+      command: COMMANDS.SEND_NOTIFICATION,
+      data: notificationData,
+    });
     if (!socket) throw new Error("Fatal: Unable to get ws connection");
     socket.send(
       JSON.stringify({
@@ -104,5 +122,16 @@
       const executor = serverEventsHandler[event];
       executor(data);
     });
+  }
+
+  function extractYoutubeVideoTitleFromPageTitle(pageTtitle) {
+    return pageTtitle.slice(
+      pageTtitle.indexOf(" ") + 1,
+      pageTtitle.indexOf("-") - 1
+    );
+  }
+
+  function getPauseNotificationMessage(youtubeVideoTitle) {
+    return `Your video: "${youtubeVideoTitle}" was paused.`;
   }
 })();
