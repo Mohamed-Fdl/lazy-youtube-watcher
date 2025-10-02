@@ -27,7 +27,18 @@ export const SendAwakenessCheckAlertMessage = async (options) => {
     });
     return;
 };
+export const SendTextMessage = async (options) => {
+    const { chatId, text } = options;
+    await axios.post(`${baseUrl}/bot${botToken}/sendMessage`, {
+        chat_id: chatId,
+        text,
+    });
+    return;
+};
 export const getAwakenessAlertText = (youtubeVideoLink) => {
     return `🚨🚨🚨🚨<b>Are you awake?</b>🚨🚨🚨🚨<b>Video Link:</b> ${youtubeVideoLink}`;
+};
+export const getChatIdRequestMessage = (chatId) => {
+    return chatId;
 };
 //# sourceMappingURL=utils.js.map

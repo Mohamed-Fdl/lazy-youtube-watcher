@@ -3,7 +3,8 @@ import cors from "@fastify/cors";
 import WebSocket from "@fastify/websocket";
 import { Configuration } from "./configuration.js";
 import { WebSocketParams } from "./schema.js";
-import { AwakenessCheckResponse, EventsOnAwakenessCheckResponseMapping, ServerEventsHandled, SocketEventHandling, TelegramTokenSecretHeaderKey, } from "./globals.js";
+import { AwakenessCheckResponse, EventsOnAwakenessCheckResponseMapping, GET_CHAT_ID_COMMAND, ServerEventsHandled, SocketEventHandling, TelegramTokenSecretHeaderKey, } from "./globals.js";
+import { getChatIdRequestMessage, SendTextMessage } from "./utils.js";
 const Chats = new Map();
 const fastify = Fastify({
     logger: { level: Configuration.httpServer.logLevel },
@@ -34,11 +35,19 @@ fastify.get("/", async (request, reply) => {
     reply.send({ status: "ok" });
 });
 fastify.post("/webhook", async (request, reply) => {
+    console.log("[body]", request.body);
     request.log.info(`req-headers: ${JSON.stringify(request.headers)}`);
     request.log.info(`req-body: ${JSON.stringify(request.body)}`);
     const secretHeader = request.headers[TelegramTokenSecretHeaderKey];
     if (!(secretHeader === Configuration.telegram.secretHeaderToken)) {
         reply.send({ status: "ko", error: "Invalid header signature" });
+        return;
+    }
+    const body = request.body;
+    if ("message" in body && body.message.text === GET_CHAT_ID_COMMAND) {
+        const chatId = String(body.message.chat.id);
+        request.log.info(`user request for chat id: ${chatId}`);
+        await SendTextMessage({ chatId, text: getChatIdRequestMessage(chatId) });
         return;
     }
     try {

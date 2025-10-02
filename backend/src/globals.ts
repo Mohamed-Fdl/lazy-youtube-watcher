@@ -35,3 +35,5 @@ export const SocketEventHandling: Record<
 > = {
   [ServerEventsHandled.CHECK_AWAKENESS]: SendAwakenessCheckAlertMessage,
 };
+
+export const GET_CHAT_ID_COMMAND = "/get_chat_id";

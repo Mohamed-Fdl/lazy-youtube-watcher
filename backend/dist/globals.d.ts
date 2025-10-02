@@ -16,4 +16,5 @@ export declare enum ServerEventsHandled {
 }
 export declare const EventsOnAwakenessCheckResponseMapping: Record<AwakenessCheckResponse, Events>;
 export declare const SocketEventHandling: Record<ServerEventsHandled, HandleSocketEvent>;
+export declare const GET_CHAT_ID_COMMAND = "/get_chat_id";
 //# sourceMappingURL=globals.d.ts.map

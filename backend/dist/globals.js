@@ -25,4 +25,5 @@ export const EventsOnAwakenessCheckResponseMapping = {
 export const SocketEventHandling = {
     [ServerEventsHandled.CHECK_AWAKENESS]: SendAwakenessCheckAlertMessage,
 };
+export const GET_CHAT_ID_COMMAND = "/get_chat_id";
 //# sourceMappingURL=globals.js.map

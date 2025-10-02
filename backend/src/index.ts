@@ -6,11 +6,16 @@ import { WebSocketParams, type WebSocketParamsType } from "./schema.js";
 import {
   AwakenessCheckResponse,
   EventsOnAwakenessCheckResponseMapping,
+  GET_CHAT_ID_COMMAND,
   ServerEventsHandled,
   SocketEventHandling,
   TelegramTokenSecretHeaderKey,
 } from "./globals.js";
-import type { TelegramCallbackQueyUpdate } from "./types.js";
+import type {
+  TelegramCallbackQueyUpdate,
+  TelegramMessageUpdate,
+} from "./types.js";
+import { getChatIdRequestMessage, SendTextMessage } from "./utils.js";
 
 const Chats: Map<number, WebSocket.WebSocket> = new Map();
 
@@ -63,6 +68,14 @@ fastify.post("/webhook", async (request, reply) => {
   const secretHeader = request.headers[TelegramTokenSecretHeaderKey];
   if (!(secretHeader === Configuration.telegram.secretHeaderToken)) {
     reply.send({ status: "ko", error: "Invalid header signature" });
+    return;
+  }
+
+  const body = request.body as TelegramMessageUpdate;
+  if ("message" in body && body.message.text === GET_CHAT_ID_COMMAND) {
+    const chatId = String(body.message.chat.id);
+    request.log.info(`user request for chat id: ${chatId}`);
+    await SendTextMessage({ chatId, text: getChatIdRequestMessage(chatId) });
     return;
   }
 
