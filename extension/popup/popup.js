@@ -1,3 +1,4 @@
+const popupContent = document.getElementById("popup-content");
 const awakenessCheckForm = document.getElementById("settings-form");
 const successMessage = document.getElementById("success-message");
 const infoMessage = document.getElementById("info-message");
@@ -5,12 +6,16 @@ const intervalInfoMessage = document.getElementById("interval-info");
 const errorContent = document.getElementById("error-content");
 const removeCheckButton = document.getElementById("remove-check");
 
+const youtubeVideoPagePrefix = "https://www.youtube.com/watch?v=";
+const pageUrl = window.location.href;
+
 const COMMANDS = {
   SET_AWAKENESS_CHECK: "set.awakeness.check",
   GET_STATUS: "get.status",
   UPDATE_BROWSER_ACTION_UI: "update.browser.action.ui",
   REMOVE_AWAKENESS_CHECK: "remove.awakeness.check",
   SEND_NOTIFICATION: "send.notification",
+  DISABLE_EXTENSION: "disable.extension",
 };
 const commandHandler = {
   [COMMANDS.SET_AWAKENESS_CHECK]: (data) => {
@@ -31,6 +36,14 @@ const commandHandler = {
     return;
   },
   [COMMANDS.SEND_NOTIFICATION]: (data) => {
+    return;
+  },
+  [COMMANDS.DISABLE_EXTENSION]: (data) => {
+    popupContent.style.display = "none";
+    errorContent.style.display = "block";
+    errorContent.textContent =
+      "Use this extension when you are wayching a youtube video";
+
     return;
   },
 };
@@ -109,9 +122,11 @@ function listenForRemoveCheckButtonClick() {
 }
 
 function reportExecuteScriptError(error) {
-  document.querySelector("#popup-content").classList.add("hidden");
-  document.querySelector("#error-content").classList.remove("hidden");
+  popupContent.style.display = "none";
+  errorContent.style.display = "block";
+  errorContent.textContent = error.message;
   console.error(`Failed to execute content script: ${error.message}`, error);
+  return;
 }
 
 browser.tabs

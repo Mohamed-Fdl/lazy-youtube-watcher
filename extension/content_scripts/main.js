@@ -9,6 +9,8 @@
   const serverUrl = "ws://localhost:8080";
   let socket = null;
 
+  const pageUrl = window.location.href;
+  const youtubeVideoPagePrefix = "https://www.youtube.com/watch?v=";
   const ytVideo = document.querySelector("video");
   const ytVideoPageTitle = document.querySelector("title").textContent;
   const ytVideoTitle = extractYoutubeVideoTitleFromPageTitle(ytVideoPageTitle);
@@ -19,6 +21,7 @@
     UPDATE_BROWSER_ACTION_UI: "update.browser.action.ui",
     REMOVE_AWAKENESS_CHECK: "remove.awakeness.check",
     SEND_NOTIFICATION: "send.notification",
+    DISABLE_EXTENSION: "disable.extension",
   };
   const commandHandler = {
     [COMMANDS.SET_AWAKENESS_CHECK]: async (data) => {
@@ -35,6 +38,13 @@
       return;
     },
     [COMMANDS.GET_STATUS]: (data) => {
+      if (!pageUrl.startsWith(youtubeVideoPagePrefix)) {
+        browser.runtime.sendMessage({
+          command: COMMANDS.DISABLE_EXTENSION,
+          data: null,
+        });
+        return;
+      }
       if (window.awakenessCheckSet) {
         browser.runtime.sendMessage({
           command: COMMANDS.UPDATE_BROWSER_ACTION_UI,
@@ -55,6 +65,9 @@
       return;
     },
     [COMMANDS.SEND_NOTIFICATION]: (data) => {
+      return;
+    },
+    [COMMANDS.DISABLE_EXTENSION]: (data) => {
       return;
     },
   };
@@ -125,6 +138,7 @@
   }
 
   function extractYoutubeVideoTitleFromPageTitle(pageTtitle) {
+    // ytube video format: "(3) Title - Youtube"
     return pageTtitle.slice(
       pageTtitle.indexOf(" ") + 1,
       pageTtitle.indexOf("-") - 1

@@ -2,7 +2,6 @@ let NOTIFICATION_KEY = "send.notification";
 
 browser.runtime.onMessage.addListener((message) => {
   try {
-    console.log("[message received]", message);
     const { command, data } = message;
 
     if (!(command === NOTIFICATION_KEY)) return;
