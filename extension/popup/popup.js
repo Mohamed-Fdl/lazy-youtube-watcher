@@ -75,10 +75,11 @@ function listenForAwakenessCheckFormSubmission() {
     successMessage.style.display = "none";
     errorContent.style.display = "none";
 
-    const chatIdInput = document.getElementById("chatId");
     const intervalInput = document.getElementById("interval");
 
-    const chatId = chatIdInput.value;
+    const message = await browser.storage.sync.get("chatId");
+
+    const chatId = message.chatId;
     const interval = parseInt(intervalInput.value);
 
     if (!(chatId && interval)) {

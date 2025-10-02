@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>LazyYouTubeWatcher — Preferences</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        :root {
+            --red: #e50914;
+            --red-dark: #b20710;
+            --bg: #ffffff;
+            --muted: #666;
+            --success-bg: #e6f9ec;
+            --success-border: #2ecc71;
+            --success-text: #2d7a46;
+            --card-border: #e6e6e6;
+            --radius: 10px;
+            --pad: 16px;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg);
+            color: #222;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 18px auto;
+            padding: var(--pad);
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-dot {
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #fff 0%, #f6f6f6 100%);
+            border: 2px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            flex-shrink: 0;
+        }
+
+        .logo-dot svg {
+            width: 34px;
+            height: 34px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--red);
+        }
+
+        p.lead {
+            margin: 8px 0 18px 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .card {
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 14px;
+            background: #fff;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+        }
+
+        .steps {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .step .num {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--red);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step .text {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .hint {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        form.settings {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+        }
+
+        input[type="text"] {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-size: 14px;
+            outline: none;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--red);
+            box-shadow: 0 4px 12px rgba(233, 9, 20, 0.06);
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button.save {
+            background: var(--red);
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        button.save:hover {
+            background: var(--red-dark);
+        }
+
+        .note {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        #error-content {
+            margin-top: 12px;
+            color: var(--red);
+            font-weight: 700;
+            font-size: 13px;
+            display: none;
+        }
+
+        #success-content {
+            margin-top: 12px;
+            display: none;
+            padding: 10px;
+            border-radius: 8px;
+            background: var(--success-bg);
+            border: 2px solid var(--success-border);
+            color: var(--success-text);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* small screens */
+        @media (max-width:420px) {
+            .container {
+                padding: 12px;
+                margin: 12px;
+            }
+
+            .logo-dot {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>LazyYouTubeWatcher</h1>
+                <p class="lead">Set your Telegram Chat ID so the extension can send awakeness checks to you.</p>
+            </div>
+        </header>
+
+        <div class="card" role="region" aria-label="How to get chat id">
+            <strong>How to get your Telegram Chat ID</strong>
+            <ol class="steps" aria-hidden="false">
+                <li class="step">
+                    <div class="num">1</div>
+                    <div class="text">Open Telegram and <strong>search for the bot</strong> named
+                        <code>Lazy Youtube Watcher</code>.
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="num">2</div>
+                    <div class="text">Send the command <code>/get_chat_id</code> to the bot. The bot will reply with
+                        your numeric chat ID.</div>
+                </li>
+                <li class="step">
+                    <div class="num">3</div>
+                    <div class="text">Copy the chat ID and paste it below into the extension settings.</div>
+                </li>
+            </ol>
+
+            <p class="hint">Tip: If the bot doesn't respond, make sure you started a conversation with it (press Start)
+                or check that the bot username is correct.</p>
+
+            <form id="prefs-form" class="settings" autocomplete="off">
+                <div>
+                    <label for="chatIdInput">Your Telegram Chat ID</label>
+                    <input id="chat-id" type="text" inputmode="numeric" placeholder="e.g. 123456789"
+                        aria-label="Telegram chat id" name="chatId" required>
+                </div>
+
+                <div class="row">
+                    <button id="saveBtn" class="save" type="submit">Save Chat ID</button>
+                    <div class="note">We store this in your browser extension settings only.</div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="main.js"></script>
+
+</body>
+</html>

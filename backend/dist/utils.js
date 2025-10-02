@@ -4,6 +4,7 @@ import { AwakenessCheckResponse } from "./globals.js";
 const { baseUrl, botToken } = Configuration.telegram;
 export const SendAwakenessCheckAlertMessage = async (options) => {
     const { chatId, youtubeVideoLink } = options;
+    console.log('[ccccccccccc]', chatId);
     await axios.post(`${baseUrl}/bot${botToken}/sendMessage`, {
         chat_id: chatId,
         parse_mode: "HTML",

@@ -13,15 +13,24 @@
             "background.js"
         ]
     },
+    "options_ui": {
+        "page": "options/index.html"
+    },
     "permissions": [
         "notifications",
         "activeTab",
         "webRequest",
-        "*://*/*"
+        "*://*/*",
+        "storage"
     ],
     "browser_action": {
         "default_icon": "icons/32.png",
         "default_title": "LazyYouTubeWatcher",
         "default_popup": "popup/popup.html"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{23dd3846-ff14-438a-ae5b-ebbada68f5ee}"
+        }
     }
 }

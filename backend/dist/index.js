@@ -35,7 +35,6 @@ fastify.get("/", async (request, reply) => {
     reply.send({ status: "ok" });
 });
 fastify.post("/webhook", async (request, reply) => {
-    console.log("[body]", request.body);
     request.log.info(`req-headers: ${JSON.stringify(request.headers)}`);
     request.log.info(`req-body: ${JSON.stringify(request.body)}`);
     const secretHeader = request.headers[TelegramTokenSecretHeaderKey];

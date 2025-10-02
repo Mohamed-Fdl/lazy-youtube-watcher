@@ -32,8 +32,7 @@
       window.awakenessCheckSet = data;
       window.awakenessCheckInterval = setInterval(
         () => checkForAwakeness(chatId),
-        interval * 1000
-        // interval * 60 * 1000
+        interval * 60 * 1000
       );
 
       return;
